@@ -2,8 +2,9 @@
 namespace plugin;
 
 
-class View extends \Bootstrap {
+class View {
     public $theme;
+    public $data;
     private $urls = array(
         /* Multiple functions */
 //        "/test/this" => array("testThisFunction","testThisToo"),
@@ -11,11 +12,14 @@ class View extends \Bootstrap {
 //        "/test/two"  => "testThisToo"
     );
 
-    public function __construct($theme) {
+    public function __construct($theme, $data) {
         if(!empty($theme)) {
             $this->theme = $theme;
+            $this->data = $data;
+            $this->render();
+        } else {
+            debug("No theme to render [View]");
         }
-        $this->render();
     }
 
     public function render() {
@@ -24,7 +28,7 @@ class View extends \Bootstrap {
         $twig = new \Twig_Environment($loader);
 
         $template = $twig->loadTemplate('main.twig');
-        echo $template->render(array('the' => 'variables', 'go' => 'here'));
+        echo $template->render(\Bootstrap::$output);
     }
 
     public function run() {
@@ -33,6 +37,7 @@ class View extends \Bootstrap {
 
     public function __destruct() {
         /* Output $this->output() */
+
     }
 
 }

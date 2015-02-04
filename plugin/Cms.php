@@ -3,8 +3,8 @@ namespace plugin;
 
 use entities\cmsEntity;
 
-class Cms extends \Bootstrap {
-    public $output;
+class Cms extends \Plugin {
+    public $output = [];
     /** @var cmsEntity $cmsObject  */
     public $cmsObject;
 
@@ -16,13 +16,13 @@ class Cms extends \Bootstrap {
     public function __construct($pageId) {
         parent::__construct();
         $this->pageId = $pageId;
-        $this->cmsObject = $this->em->getRepository("e:cmsEntity")->findOneBy(array("pageId" => $pageId));
+        $this->cmsObject = \Bootstrap::$em->getRepository("e:cmsEntity")->findOneBy(array("pageId" => $pageId));
 
         /* TODO Sæt ind i en form for XML/JSON sheet istedet */
-        $this->output = $this->cmsObject->getContent();
+        $this->output = array("content" => $this->cmsObject->getContent());
 
         foreach($this->urls as $url => $function) {
-            if($this->url == $url) {
+            if(\Bootstrap::$url == $url) {
                 if(is_array($function)) {
                     foreach($function as $f) {
                         $this->$f();
@@ -36,7 +36,7 @@ class Cms extends \Bootstrap {
 
 
     public function testThisFunction() {
-        $this->output = "We got first function";
+        $this->output = array("some" => "Yo");
     }
 
     public function testThisToo() {
@@ -44,12 +44,11 @@ class Cms extends \Bootstrap {
     }
 
     public function run() {
-
     }
 
     public function __destruct() {
         /* Output $this->output() */
-        echo $this->output;
+        \Bootstrap::addOutput(array("Cms", $this->output));
     }
 
 }

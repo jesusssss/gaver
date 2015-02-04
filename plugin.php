@@ -1,9 +1,8 @@
 <?php
 use entities\pageEntity as pageEntity;
-class Plugin extends Bootstrap {
+class Plugin {
 
     function __construct($url = null) {
-        parent::__construct();
         if($url !== null) {
             $this->getPluginFromUrl($url);
         }
@@ -11,7 +10,7 @@ class Plugin extends Bootstrap {
 
     function getPluginFromUrl($url) {
         /** @var pageEntity $page */
-        $page = $this->em->getRepository("e:pageEntity")->findOneBy(array("url" => $url));
+        $page = Bootstrap::$em->getRepository("e:pageEntity")->findOneBy(array("url" => $url));
         if($page) {
             $plugin = $page->getPlugin();
             $class  = "plugin\\$plugin";
@@ -23,6 +22,20 @@ class Plugin extends Bootstrap {
             header("HTTP/1.0 404 Not Found");
             echo $url."<br/>";
             echo "Page not found 404";
+        }
+    }
+
+    function __destruct() {
+        // Show XML instead
+        if(isset($_GET["xml"])) {
+            if($GLOBALS["developer"] === true) {
+                //You are OK
+                debug_r(Bootstrap::$output);
+            } else {
+                echo "You are a very rude person for trying to get here, u know?";
+            }
+        } else {
+            $view = new plugin\View(Bootstrap::$theme, Bootstrap::$output);
         }
     }
 }
