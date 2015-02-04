@@ -13,9 +13,12 @@ class Plugin extends Bootstrap {
         /** @var pageEntity $page */
         $page = $this->em->getRepository("e:pageEntity")->findOneBy(array("url" => $url));
         if($page) {
-            echo $page->getUrl();
-            echo "<br/>";
-            echo $url;
+            $plugin = $page->getPlugin();
+            $class  = "plugin\\$plugin";
+            $run = new $class($page->getId());
+
+            /** Every plugin must have "run" function. It will execute just before __destruct function runs */
+            register_shutdown_function(array($run, 'run'));
         } else {
             header("HTTP/1.0 404 Not Found");
             echo $url."<br/>";

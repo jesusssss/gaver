@@ -19,6 +19,9 @@ class userEntity {
     /** @ORM\Column(type="string") */
     public $email;
 
+    /** @ORM\Column(type="datetime") */
+    public $birthdate;
+
     /**
      * @return mixed
      */
@@ -74,5 +77,22 @@ class userEntity {
     {
         return $this->id;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getBirthdate()
+    {
+        return $this->birthdate;
+    }
+
+    /**
+     * @param mixed $birthdate
+     */
+    public function setBirthdate($birthdate)
+    {
+        $this->birthdate = $birthdate;
+    }
+
 
 }

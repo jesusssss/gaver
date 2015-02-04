@@ -8,7 +8,7 @@ if(in_array($_SERVER['REMOTE_ADDR'], $devIpList)) {
     $developer = true;
 }
 header('Content-type: text/html; charset=utf-8');
-
+date_default_timezone_set('Europe/Copenhagen');
 session_start();
 
 /* Bootstrap file first */
@@ -25,12 +25,21 @@ if(isset($_GET["xml"])) {
     }
     exit;
 }
-
 /* Get requested url */
 $url = $_SERVER['REQUEST_URI'];
 /* If url contains $_REQUEST value, sort it out */
 if (strpos($url,'?') !== false) {
     $url = strstr($url,'?', true);
+}
+
+/* Init debug */
+function debug($output) {
+    $date = date('d-m-Y H:i:s');
+    echo "<pre>";
+    echo "<strong>Debug statement [".$date."]</strong>: <br/>".$output;
+    echo "<br/>";
+    echo "----------------------------------------------------------------";
+    echo "</pre>";
 }
 
 $run = new Plugin($url);
