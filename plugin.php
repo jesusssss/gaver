@@ -26,17 +26,7 @@ class Plugin {
     }
 
     function __destruct() {
-        // Show XML instead
-        if(isset($_GET["xml"])) {
-            if($GLOBALS["developer"] === true) {
-                //You are OK
-                debug_r(Bootstrap::$output);
-            } else {
-                echo "You are a very rude person for trying to get here, u know?";
-            }
-        } else {
-            $view = new plugin\View(Bootstrap::$theme, Bootstrap::$output);
-        }
+        $view = new plugin\View(Bootstrap::$theme, Bootstrap::$output);
     }
 }
 

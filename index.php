@@ -39,14 +39,22 @@ function debug($output) {
         $date = date('d-m-Y H:i:s');
         echo "<pre>";
         echo "<strong>Debug statement [".$date."]</strong>: <br/>";
-        print($output);
+        if(is_array($output)) {
+            print_r($output);
+        } else {
+            print($output);
+        }
         echo "<br/>";
         echo "----------------------------------------------------------------";
         echo "</pre>";
     }
 }
 $bs = new Bootstrap();
-$run = new Plugin($url);
+if(\Bootstrap::$theme != "admin") {
+    $run = new Plugin($url);
+} else {
+    $run = new Plugin();
+}
 
 
 

@@ -7,7 +7,7 @@ class Bootstrap
 {
     public static $em;
     public static $url;
-    public $adminOutput;
+    public static $adminOutput = [];
     public static $output = [];
     public static $theme;
 
@@ -18,8 +18,6 @@ class Bootstrap
         /* Autoload composer stuff */
         require "vendor/autoload.php";
         Twig_Autoloader::register();
-
-        $this->setConfig();
 
         /* Get requested url */
         $url = $_SERVER['REQUEST_URI'];
@@ -57,16 +55,28 @@ class Bootstrap
 
         self::$em = EntityManager::create($dbParams, $config);
 
-
+        $this->setConfig();
     }
 
 
     public function setConfig()
     {
         define("__VIEWS__", __DIR__."/views/");
+        $config = array(
+            "config", array(
+                "url" => self::$url,
+                "isDeveloper" => $GLOBALS["developer"],
+                "theme" => self::$theme
+            )
+        );
+        $this->addOutput($config);
     }
 
     public static function addOutput($output) {
-        self::$output["data"][$output[0]] = $output[1];
+        self::$output[$output[0]] = $output[1];
+    }
+
+    public static function addAdminOutput($output) {
+        self::$adminOutput[$output[0]] = $output[1];
     }
 }

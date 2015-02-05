@@ -4,7 +4,9 @@ namespace plugin;
 use entities\cmsEntity;
 
 class Cms extends \Plugin {
+    public $plugin = "Cms";
     public $output = [];
+    public $adminOutput = [];
     /** @var cmsEntity $cmsObject  */
     public $cmsObject;
 
@@ -18,8 +20,11 @@ class Cms extends \Plugin {
         $this->pageId = $pageId;
         $this->cmsObject = \Bootstrap::$em->getRepository("e:cmsEntity")->findOneBy(array("pageId" => $pageId));
 
-        /* TODO Sæt ind i en form for XML/JSON sheet istedet */
-        $this->output = array("content" => $this->cmsObject->getContent());
+        $this->addOutput(array(
+            "id" => $this->cmsObject->getId(),
+            "pageId" => $this->cmsObject->getPageId(),
+            "content" => $this->cmsObject->getContent())
+        );
 
         foreach($this->urls as $url => $function) {
             if(\Bootstrap::$url == $url) {
@@ -34,21 +39,23 @@ class Cms extends \Plugin {
         }
     }
 
-
-    public function testThisFunction() {
-        $this->output = array("some" => "Yo");
-    }
-
-    public function testThisToo() {
-        $this->output = "We got the other function";
-    }
-
     public function run() {
+    }
+
+    public function addOutput($output) {
+        foreach($output as $key => $value) {
+            $this->output[$key] = $value;
+        }
     }
 
     public function __destruct() {
         /* Output $this->output() */
-        \Bootstrap::addOutput(array("Cms", $this->output));
+        if(!empty($this->output)) {
+            \Bootstrap::addOutput(array($this->plugin, $this->output));
+        }
+        if(!empty($this->adminOutput)) {
+            \Bootstrap::addAdminOutput(array($this->plugin, $this->adminOutput));
+        }
     }
 
 }

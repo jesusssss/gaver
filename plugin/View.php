@@ -23,12 +23,75 @@ class View {
     }
 
     public function render() {
+        $xmlData = new \SimpleXMLElement('<data/>');
 
-        $loader = new \Twig_Loader_Filesystem(__VIEWS__.$this->theme);
-        $twig = new \Twig_Environment($loader);
+        foreach(\Bootstrap::$output as $key => $node) {
+            $this->data = $xmlData->addChild('plugin');
+            $this->data->addAttribute("plugin", $key);
 
-        $template = $twig->loadTemplate('main.twig');
-        echo $template->render(\Bootstrap::$output);
+            foreach($node as $k => $v) {
+                if(is_array($v)) {
+                    $list = $this->data->addChild("list");
+                    $list->addAttribute("type", $k);
+                    $this->addListItems($v, $list);
+
+                } else {
+                    $this->data->addChild($k, $v);
+                }
+            }
+        }
+
+        if(\Bootstrap::$theme == "admin") {
+            foreach(\Bootstrap::$adminOutput as $key => $node) {
+                $this->data = $xmlData->addChild('plugin');
+                $this->data->addAttribute("plugin", $key);
+
+                foreach($node as $k => $v) {
+                    if(is_array($v)) {
+                        $list = $this->data->addChild("list");
+                        $list->addAttribute("type", $k);
+                        $this->addListItems($v, $list);
+
+                    } else {
+                        $this->data->addChild($k, $v);
+                    }
+                }
+            }
+        }
+
+        // Load the XML source
+        $xml = new \DOMDocument;
+        $xml->loadXML($xmlData->asXML());
+
+        $xsl = new \DOMDocument;
+        $xsl->load(__VIEWS__.$this->theme."/main.xsl");
+
+        if(isset($_GET["xml"])) {
+            if ($GLOBALS["developer"] === true) {
+                header('Content-type: text/xml');
+                print($xmlData->asXML());
+            } else {
+                echo "You are a very rude person for trying to get here, u know?";
+            }
+        } else {
+            // Configure the transformer
+            $proc = new \XSLTProcessor;
+            $proc->importStyleSheet($xsl); // attach the xsl rules
+            echo $proc->transformToXML($xml);
+        }
+
+    }
+
+    public function addListItems($dataArray, $list) {
+        foreach($dataArray as $key => $value) {
+            if(is_array($value)) {
+                $newList = $list->addChild("list");
+                $newList->addAttribute("type", $key);
+                $this->addListItems($value, $newList);
+            } else {
+                $list->addChild($key, $value);
+            }
+        }
     }
 
     public function run() {
