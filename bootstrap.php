@@ -1,6 +1,7 @@
 <?php
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
+use entities\baadeCmsEntity;
 use plugin\View;
 
 class Bootstrap
@@ -10,6 +11,7 @@ class Bootstrap
     public static $adminOutput = [];
     public static $output = [];
     public static $theme;
+    public static $dbname;
 
     protected static $instance = null;
 
@@ -17,7 +19,8 @@ class Bootstrap
     {
         /* Autoload composer stuff */
         require "vendor/autoload.php";
-        Twig_Autoloader::register();
+
+
 
         /* Get requested url */
         $url = $_SERVER['REQUEST_URI'];
@@ -38,12 +41,14 @@ class Bootstrap
         $paths = array("/entities");
         $isDevMode = false;
 
+        $dbName = $this->getDbName();
+
         // the connection configuration
         $dbParams = array(
             'driver' => 'pdo_mysql',
             'user' => 'root',
             'password' => '1000koder',
-            'dbname' => 'gaver',
+            'dbname' => $dbName,
         );
 
         $config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode, null, null, false);
@@ -56,6 +61,7 @@ class Bootstrap
         self::$em = EntityManager::create($dbParams, $config);
 
         $this->setConfig();
+
     }
 
 
@@ -70,6 +76,29 @@ class Bootstrap
             )
         );
         $this->addOutput($config);
+    }
+
+    public function getDbName() {
+        $completeUrl = $_SERVER["HTTP_HOST"];
+        $paths = array("/entities");
+        $isDevMode = false;
+        // the connection configuration
+        $dbParams = array(
+            'driver' => 'pdo_mysql',
+            'user' => 'root',
+            'password' => '1000koder',
+            'dbname' => 'baadecms',
+        );
+
+        $config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode, null, null, false);
+
+        /** Add entity namespaces here, by continuing like below */
+        $config->addEntityNamespace("e", "entities");
+
+        $em = EntityManager::create($dbParams, $config);
+        /** @var baadeCmsEntity $db */
+        $db = $em->getRepository("e:baadeCmsEntity")->findOneBy(array("url" => $completeUrl));
+        return $db->getName();
     }
 
     public static function addOutput($output) {

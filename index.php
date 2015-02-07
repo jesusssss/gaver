@@ -1,4 +1,6 @@
 <?php
+use plugin\User;
+
 $devIpList = array(
     "Rene hjemme" => "178.155.151.10"
 );
@@ -55,6 +57,7 @@ if(\Bootstrap::$theme != "admin") {
 } else {
     $run = new Plugin();
 }
+$user = new User();
 
 
 

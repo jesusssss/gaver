@@ -19,8 +19,8 @@ class userEntity {
     /** @ORM\Column(type="string") */
     public $email;
 
-    /** @ORM\Column(type="datetime") */
-    public $birthdate;
+    /** @ORM\Column(type="integer") */
+    public $admin;
 
     /**
      * @return mixed
@@ -28,6 +28,22 @@ class userEntity {
     public function getEmail()
     {
         return $this->email;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAdmin()
+    {
+        return $this->admin;
+    }
+
+    /**
+     * @param mixed $admin
+     */
+    public function setAdmin($admin)
+    {
+        $this->admin = $admin;
     }
 
     /**
@@ -77,22 +93,4 @@ class userEntity {
     {
         return $this->id;
     }
-
-    /**
-     * @return mixed
-     */
-    public function getBirthdate()
-    {
-        return $this->birthdate;
-    }
-
-    /**
-     * @param mixed $birthdate
-     */
-    public function setBirthdate($birthdate)
-    {
-        $this->birthdate = $birthdate;
-    }
-
-
 }

@@ -2,13 +2,14 @@
 use entities\pageEntity as pageEntity;
 class Plugin {
 
-    function __construct($url = null) {
+    public function __construct($url = null) {
         if($url !== null) {
             $this->getPluginFromUrl($url);
         }
+        $this->runPlugins();
     }
 
-    function getPluginFromUrl($url) {
+    public function getPluginFromUrl($url) {
         /** @var pageEntity $page */
         $page = Bootstrap::$em->getRepository("e:pageEntity")->findOneBy(array("url" => $url));
         if($page) {
@@ -25,8 +26,31 @@ class Plugin {
         }
     }
 
-    function __destruct() {
+    public function __destruct() {
         $view = new plugin\View(Bootstrap::$theme, Bootstrap::$output);
+    }
+
+    public function runPlugins() {
+        foreach($_REQUEST as $key => $value) {
+            if(strpos($key,'-Action-')) {
+                $plugin = strstr($key, "-Action", true);
+                $action = strstr($key, "-Action-");
+                $action = substr($action, 8);
+                $class = "plugin\\$plugin";
+                $run = new $class();
+                $run->$action();
+            }
+        }
+    }
+
+    public function pget($key) {
+        if(isset($_POST[$key])) {
+            return $_POST[$key];
+        } else if(isset($_GET[$key])) {
+            return $_GET[$key];
+        } else {
+            return false;
+        }
     }
 }
 
