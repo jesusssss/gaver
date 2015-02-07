@@ -11,6 +11,9 @@ class pageEntity {
     public $id;
 
     /** @ORM\Column(type="string") */
+    public $title;
+
+    /** @ORM\Column(type="string") */
     public $url;
 
     /** @ORM\Column(type="string") */
@@ -32,6 +35,24 @@ class pageEntity {
     {
         return $this->plugin;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param mixed $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+
 
     /**
      * @param mixed $plugin

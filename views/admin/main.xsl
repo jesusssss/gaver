@@ -43,6 +43,7 @@
         </html>
     </xsl:template>
 
+    <!-- Login form -->
     <xsl:template name="login">
         <div id="adminLoginForm">
             <form method="post">
@@ -59,12 +60,49 @@
         </div>
     </xsl:template>
 
+    <!-- Admin template after login -->
     <xsl:template name="admin">
         <xsl:call-template name="adminMenu"/>
         <div class="content">
             <xsl:choose>
                 <xsl:when test="$url = '/admin/pages'">
-                    <xsl:value-of select="/data/plugin[@plugin='Pages']/list[@type='pages']/list[2]/url"/>
+                   <h2>List of pages</h2>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <td>
+                                    Title
+                                </td>
+                                <td>
+                                    Link    
+                                </td>
+                                <td>
+                                    Plugin
+                                </td>
+                                <td>
+                                    Edit
+                                </td>
+                                <td>
+                                    Delete
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <xsl:for-each select="/data/plugin[@plugin='Pages']/list[@type='pages']/list">
+                                    <td>
+                                        <xsl:value-of select="title"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="url"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="plugin"/>
+                                    </td>
+                                </xsl:for-each>
+                            </tr>
+                        </tbody>
+                    </table>
                 </xsl:when>
             </xsl:choose>
         </div>
@@ -73,6 +111,7 @@
         </div>
     </xsl:template>
 
+    <!-- Admin menu -->
     <xsl:template name="adminMenu">
         <xsl:if test="$admin = 1">
             <nav class="navbar navbar-default">
@@ -91,17 +130,10 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav">
-                            <li class="active"><a href="/admin/pages?Pages-Action-getAllPages">Pages <span class="sr-only">(current)</span></a></li>
                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">CMS <span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><a href="#">Action</a></li>
-                                    <li><a href="#">Another action</a></li>
-                                    <li><a href="#">Something else here</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="#">Separated link</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="#">One more separated link</a></li>
+                                    <li><a href="/admin/pages?Pages-Action-getAllPages">Pages</a></li>
                                 </ul>
                             </li>
                         </ul>
