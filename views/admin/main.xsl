@@ -1,6 +1,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
     <xsl:include href="setup.xsl"/>
+    <xsl:include href="pages.xsl"/>
 
     <xsl:template match="/">
         <html>
@@ -64,46 +65,12 @@
     <xsl:template name="admin">
         <xsl:call-template name="adminMenu"/>
         <div class="content">
+            <xsl:apply-templates/>
             <xsl:choose>
                 <xsl:when test="$url = '/admin/pages'">
-                   <h2>List of pages</h2>
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <td>
-                                    Title
-                                </td>
-                                <td>
-                                    Link    
-                                </td>
-                                <td>
-                                    Plugin
-                                </td>
-                                <td>
-                                    Edit
-                                </td>
-                                <td>
-                                    Delete
-                                </td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <xsl:for-each select="/data/plugin[@plugin='Pages']/list[@type='pages']/list">
-                                    <td>
-                                        <xsl:value-of select="title"/>
-                                    </td>
-                                    <td>
-                                        <xsl:value-of select="url"/>
-                                    </td>
-                                    <td>
-                                        <xsl:value-of select="plugin"/>
-                                    </td>
-                                </xsl:for-each>
-                            </tr>
-                        </tbody>
-                    </table>
+                   <xsl:call-template name="listPages"/>
                 </xsl:when>
+
             </xsl:choose>
         </div>
         <div class="footer">
@@ -145,5 +112,4 @@
             </nav>
         </xsl:if>
     </xsl:template>
-
 </xsl:stylesheet>
