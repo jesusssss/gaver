@@ -1,6 +1,7 @@
 <?php
 namespace plugin;
 
+use entities\orderEntity;
 use Stripe\Charge;
 use Stripe\Stripe;
 
@@ -47,12 +48,43 @@ class Payment extends \Plugin {
 
 
 
+
         Stripe::setApiKey($trialAPIKey);
         $myCard = $token;
         $charge = Charge::create(array('card' => $myCard, 'amount' => $priceInCents, 'currency' => 'usd'));
-        echo $charge;
-        echo "<br/>";
-        echo $charge["id"];
+
+
+        /** @var orderEntity $order */
+        $order = new orderEntity();
+        $order->setTokenId($charge["id"]);
+        $order->setObject($charge["object"]);
+        $order->setCreated($charge["created"]);
+        $order->setLivemode($charge["liveMode"]);
+        $order->setPaid($charge["paid"]);
+        $order->setStatus($charge["status"]);
+        $order->setAmount($charge["amount"]);
+        $order->setCurency($charge["currency"]);
+        $order->setRefunded($charge["refunded"]);
+        $order->setSource($charge["source"]);
+        $order->setCaptured($charge["captured"]);
+        $order->setBalanceTransaction($charge["balance_transaction"]);
+        $order->setFailureMessage($charge["failure_message"]);
+        $order->setFailureCode($charge["failure_code"]);
+        $order->setAmountRefunded($charge["amount_refunded"]);
+        $order->setCustomer($charge["customer"]);
+        $order->setInvoice($charge["invoice"]);
+        $order->setDescription($charge["description"]);
+        $order->setDispute($charge["dispute"]);
+        $order->setMetadata($charge["metadata"]);
+        $order->setStatementDescriptor($charge["statement_descriptor"]);
+        $order->setFraudDetails($charge["fraud_details"]);
+        $order->setReceiptEmail($charge["receipt_email"]);
+        $order->setReceiptNumber($charge["receipt_number"]);
+        $order->setShipping($charge["shipping"]);
+        $order->setRefunds($charge["refunds"]);
+
+
+
     }
 
     public function run() {
